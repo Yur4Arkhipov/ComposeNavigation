@@ -14,7 +14,7 @@
         tools:targetApi="33"
         android:enableOnBackInvokedCallback="true">
         <activity
-            android:name=".examples.BasicNavigationActivity"
+            android:name=".examples.basicnavigation.BasicNavigationActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
