@@ -3,10 +3,10 @@ package com.example.composenavigation.examples.basicnavigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-object StartScreen
+data object StartScreen
 
 @Serializable
-object ScreenA
+data object ScreenA
 
 @Serializable
-object ScreenB
+data object ScreenB

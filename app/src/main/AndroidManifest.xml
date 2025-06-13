@@ -16,6 +16,8 @@
         <activity
             android:name=".examples.basicnavigation.BasicNavigationActivity"
             android:exported="false" />
+        <activity android:name=".examples.navwithargs.NavigationWithArgsActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

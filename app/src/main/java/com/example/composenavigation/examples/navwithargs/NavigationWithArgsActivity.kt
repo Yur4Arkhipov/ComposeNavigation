@@ -1,4 +1,4 @@
-package com.example.composenavigation.examples.basicnavigation
+package com.example.composenavigation.examples.navwithargs
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,7 +8,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
@@ -17,6 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,16 +28,16 @@ import androidx.navigation.compose.rememberNavController
 import com.example.composenavigation.MainActivity
 import com.example.composenavigation.ui.theme.ComposeNavigationTheme
 
-class BasicNavigationActivity : ComponentActivity() {
+class NavigationWithArgsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             ComposeNavigationTheme {
-                BasicNavigationScreen(
+                NavigationWithArgsScreen(
                     onStartActivityRunButton = {
-                        startActivity(Intent(this@BasicNavigationActivity, MainActivity::class.java))
+                        startActivity(Intent(this@NavigationWithArgsActivity, MainActivity::class.java))
                         finish()
                     }
                 )
@@ -43,23 +47,32 @@ class BasicNavigationActivity : ComponentActivity() {
 }
 
 @Composable
-fun BasicNavigationScreen(
+fun NavigationWithArgsScreen(
     onStartActivityRunButton: () -> Unit
 ) {
 
     val navController = rememberNavController()
+    val sharedViewModel: SharedViewModel = viewModel()
 
     NavHost(
         navController = navController,
-        startDestination = StartScreen
+        startDestination = StartScreen()
     ) {
-        composable<StartScreen> {
+        composable<StartScreen> { backStackEntry ->
+//            val startScreenObject: StartScreen = backStackEntry.toRoute()
             StartScreen(
                 navController = navController,
-                onStartActivityRunButton = onStartActivityRunButton)
+                count = sharedViewModel.count.value,
+                onStartActivityRunButton = onStartActivityRunButton
+            )
         }
-        composable<ScreenA> {
-            ScreenA(navController)
+        composable<ScreenA> { backStackEntry ->
+//            val screenAObject: ScreenA = backStackEntry.toRoute()
+            ScreenA(
+                navController,
+                onIncrementCount = { sharedViewModel.increment() },
+                count = sharedViewModel.count.value
+            )
         }
         composable<ScreenB> {
             ScreenB(navController)
@@ -70,6 +83,7 @@ fun BasicNavigationScreen(
 @Composable
 fun StartScreen(
     navController: NavHostController,
+    count: Int,
     onStartActivityRunButton: () -> Unit
 ) {
 
@@ -79,7 +93,7 @@ fun StartScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         Button(
-            onClick = { navController.navigate(ScreenA) }
+            onClick = { navController.navigate(ScreenA()) }
         ) {
             Text("Go to A screen")
         }
@@ -88,6 +102,11 @@ fun StartScreen(
         ) {
             Text("Go to B screen")
         }
+
+        Spacer(Modifier.height(8.dp))
+        Text("Count: $count")
+        Spacer(Modifier.height(8.dp))
+
         Button(
             onClick = onStartActivityRunButton
         ) {
@@ -97,8 +116,11 @@ fun StartScreen(
 }
 
 @Composable
-fun ScreenA(navController: NavHostController) {
-
+fun ScreenA(
+    navController: NavHostController,
+    onIncrementCount: () -> Unit,
+    count: Int
+) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -109,10 +131,16 @@ fun ScreenA(navController: NavHostController) {
             contentDescription = null,
             modifier = Modifier
                 .clickable {
-                    navController.navigate(StartScreen)
+                    navController.popBackStack()
                 }
         )
         Text("ScreenA")
+        Button(
+            onClick = onIncrementCount
+        ) {
+            Text("+1")
+        }
+        Text("Count: $count")
     }
 }
 
@@ -129,7 +157,7 @@ fun ScreenB(navController: NavHostController) {
             contentDescription = null,
             modifier = Modifier
                 .clickable {
-                    navController.navigate(StartScreen)
+                    navController.navigate(StartScreen())
                 }
         )
         Text("ScreenB")
