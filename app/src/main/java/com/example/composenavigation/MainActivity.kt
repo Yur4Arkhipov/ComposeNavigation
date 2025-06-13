@@ -17,7 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.composenavigation.examples.basicnavigation.BasicNavigationActivity
+import com.example.composenavigation.examples.bottomnavigation.BottomNavigationActivity
 import com.example.composenavigation.examples.navwithargs.NavigationWithArgsActivity
+import com.example.composenavigation.examples.nestedgraph.NestedGraphActivity
 import com.example.composenavigation.ui.theme.ComposeNavigationTheme
 
 class MainActivity : ComponentActivity() {
@@ -46,6 +48,20 @@ class MainActivity : ComponentActivity() {
                             NavigationWithArgsActivity::class.java)) }
                     ) {
                         Text("2. Передача аргументов")
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    Button(
+                        onClick = { startActivity(Intent(this@MainActivity,
+                            BottomNavigationActivity::class.java)) }
+                    ) {
+                        Text("3. Нижняя панель навигации")
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    Button(
+                        onClick = { startActivity(Intent(this@MainActivity,
+                            NestedGraphActivity::class.java)) }
+                    ) {
+                        Text("4. Вложенные классы")
                     }
                 }
             }
